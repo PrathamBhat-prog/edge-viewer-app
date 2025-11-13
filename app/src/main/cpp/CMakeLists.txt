@@ -1,0 +1,22 @@
+cmake_minimum_required(VERSION 3.22.1)
+
+project("edgeviewer")
+
+# Define the C++ library that will be built
+add_library(
+        native-lib
+        SHARED
+        native-lib.cpp
+)
+
+# Link to Android log library (for logging from C++)
+find_library(
+        log-lib
+        log
+)
+
+target_link_libraries(
+        native-lib
+        ${log-lib}
+        c++
+)

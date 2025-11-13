@@ -1,0 +1,4 @@
+# ninja log v5
+1	654	7847675117100621	CMakeFiles/native-lib.dir/native-lib_.cpp.o	e28144706d0f54f7
+0	612	7847675649519869	CMakeFiles/native-lib.dir/native-lib.cpp.o	f1ed9b634de98733
+5	178	7847683073218802	C:/Users/GHOST PROTOCOL/Documents/flamapp-edge-viewer/app/build/intermediates/cxx/Debug/5q1d5e5p/obj/armeabi-v7a/libnative-lib.so	c7c46c0c51566d48
