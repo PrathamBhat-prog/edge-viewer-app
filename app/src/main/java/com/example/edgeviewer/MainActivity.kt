@@ -3,6 +3,7 @@ package com.example.edgeviewer
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.graphics.SurfaceTexture
 import android.hardware.camera2.*
 import android.os.Bundle
@@ -13,6 +14,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import java.nio.ByteBuffer
 
 class MainActivity : AppCompatActivity() {
 
@@ -26,6 +28,7 @@ class MainActivity : AppCompatActivity() {
 
     // JNI function from C++
     external fun stringFromJNI(): String
+    external fun processFrame(bytes: ByteArray, width: Int, height: Int): ByteArray
 
     private val CAMERA_REQUEST_CODE = 100
     private lateinit var textureView: TextureView
@@ -60,7 +63,16 @@ class MainActivity : AppCompatActivity() {
         }
         override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture, width: Int, height: Int) {}
         override fun onSurfaceTextureDestroyed(surface: SurfaceTexture): Boolean = true
-        override fun onSurfaceTextureUpdated(surface: SurfaceTexture) {}
+        override fun onSurfaceTextureUpdated(surface: SurfaceTexture) {
+            val bitmap = getBitmapFromTextureView()
+            if (bitmap != null) {
+                val byteArray = bitmapToByteArray(bitmap)
+                if (byteArray != null) {
+                    val processedBytes = processFrame(byteArray, bitmap.width, bitmap.height)
+                    // The processedBytes are now ready to be used
+                }
+            }
+        }
     }
 
     private fun checkCameraPermission() {
@@ -153,5 +165,23 @@ class MainActivity : AppCompatActivity() {
         } catch (e: Exception) {
             Log.e("Camera", "Preview error: ${e.message}")
         }
+    }
+
+    fun getBitmapFromTextureView(): Bitmap? {
+        if (!textureView.isAvailable) {
+            return null
+        }
+        return textureView.bitmap
+    }
+
+    fun bitmapToByteArray(bitmap: Bitmap): ByteArray? {
+        if (bitmap.config != Bitmap.Config.ARGB_8888) {
+            Log.e("JNI_ERROR", "Bitmap format is not ARGB_8888")
+            return null
+        }
+
+        val byteBuffer = ByteBuffer.allocate(bitmap.byteCount)
+        bitmap.copyPixelsToBuffer(byteBuffer)
+        return byteBuffer.array()
     }
 }

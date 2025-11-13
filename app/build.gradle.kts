@@ -16,17 +16,10 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        // Enable C++ & JNI support
         externalNativeBuild {
             cmake {
-                cppFlags += ""
-                arguments += "-DANDROID_STL=c++_shared"
+                arguments.add("-DANDROID_STL=c++_shared")
             }
-        }
-
-        // Required for OpenCV native libs
-        ndk {
-            abiFilters += listOf("armeabi-v7a", "arm64-v8a")
         }
     }
 
@@ -40,7 +33,11 @@ android {
         }
     }
 
-    // CMake Support
+    // This block correctly packages the OpenCV .so files into the APK.
+    sourceSets.getByName("main") {
+        jniLibs.srcDir("D:/OpenCV-android-sdk/sdk/native/libs")
+    }
+
     externalNativeBuild {
         cmake {
             path = file("src/main/cpp/CMakeLists.txt")
@@ -48,11 +45,11 @@ android {
         }
     }
 
-    // Java & Kotlin versions
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
     kotlinOptions {
         jvmTarget = "11"
     }

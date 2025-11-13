@@ -21,7 +21,9 @@
       "artifactName": "native-lib",
       "abi": "armeabi-v7a",
       "output": "C:\\Users\\GHOST PROTOCOL\\Documents\\flamapp-edge-viewer\\app\\build\\intermediates\\cxx\\Debug\\5q1d5e5p\\obj\\armeabi-v7a\\libnative-lib.so",
-      "runtimeFiles": []
+      "runtimeFiles": [
+        "D:\\OpenCV-android-sdk\\sdk\\native\\libs\\armeabi-v7a\\libopencv_java4.so"
+      ]
     }
   }
 }
