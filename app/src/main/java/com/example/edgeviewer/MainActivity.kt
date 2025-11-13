@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Surface
 import android.view.TextureView
+import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
@@ -36,6 +37,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var textureView: TextureView
     private lateinit var processedView: ImageView
     private lateinit var captureButton: Button
+    private lateinit var retakeButton: Button
     private lateinit var cameraManager: CameraManager
     private var cameraDevice: CameraDevice? = null
     private var previewSession: CameraCaptureSession? = null
@@ -54,6 +56,7 @@ class MainActivity : AppCompatActivity() {
         textureView = findViewById(R.id.textureView)
         processedView = findViewById(R.id.processedView)
         captureButton = findViewById(R.id.captureButton)
+        retakeButton = findViewById(R.id.retakeButton)
 
         // Setup camera manager
         cameraManager = getSystemService(Context.CAMERA_SERVICE) as CameraManager
@@ -62,7 +65,7 @@ class MainActivity : AppCompatActivity() {
         // Ask for camera permission
         checkCameraPermission()
 
-        // Set up the button's onClick listener
+        // --- Click Listener for Capture Button ---
         captureButton.setOnClickListener {
             val capturedBitmap = captureFrame()
             if (capturedBitmap != null) {
@@ -72,9 +75,25 @@ class MainActivity : AppCompatActivity() {
                     val processedBitmap = byteArrayToBitmap(processedBytes, capturedBitmap.width, capturedBitmap.height)
                     if (processedBitmap != null) {
                         showProcessedFrame(processedBitmap)
+
+                        // Update UI visibility
+                        processedView.visibility = View.VISIBLE
+                        textureView.visibility = View.GONE
+                        captureButton.visibility = View.GONE
+                        retakeButton.visibility = View.VISIBLE
                     }
                 }
             }
+        }
+
+        // --- Click Listener for Retake Button ---
+        retakeButton.setOnClickListener {
+            // Clear the processed image and reset view visibility
+            processedView.setImageBitmap(null)
+            processedView.visibility = View.GONE
+            textureView.visibility = View.VISIBLE
+            captureButton.visibility = View.VISIBLE
+            retakeButton.visibility = View.GONE
         }
     }
 
@@ -87,7 +106,6 @@ class MainActivity : AppCompatActivity() {
 
         override fun onSurfaceTextureDestroyed(surface: SurfaceTexture): Boolean = true
 
-        // We no longer do real-time processing here
         override fun onSurfaceTextureUpdated(surface: SurfaceTexture) {}
     }
 
