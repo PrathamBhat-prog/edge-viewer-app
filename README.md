@@ -117,4 +117,7 @@ All code is for demonstration and evaluation purposes only.
 
 ---
 
+### Actual Camera Capture
+![Actual Pic](screenshots/actual-pic.jpeg)
+
 
